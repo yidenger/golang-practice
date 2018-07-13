@@ -100,7 +100,7 @@ func (post *Post) Delete() (err error) {
 
 func main() {
 	post := Post{Content: "Hello World!", Author: "Sau Sheong"}
-	fmt.Println(post)
+	fmt.Println(post) 
 	post.Create()
 	fmt.Println(post)
 
@@ -113,4 +113,4 @@ func main() {
 	readPost.Update()
 
 	readPost.Delete()
-}
+}零
