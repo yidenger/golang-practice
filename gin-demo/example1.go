@@ -15,6 +15,20 @@ type Login struct {
 	Password string `form:"password" json:"password" xml:"password" binding:"required"`
 }
 
+func Logger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		t := time.Now()
+
+		c.Set("example", "123")
+
+		c.Next()
+
+		latency := time.Since(t)
+
+		fmt.Println("time: ", latency)
+	}
+}
+
 func main() {
 	r := gin.New()
 
@@ -34,6 +48,7 @@ func main() {
 
 	
 	r.POST("/login", func(c *gin.Context){
+		fmt.Println(c);
 		var json Login
 		err := c.ShouldBindJSON(&json); 
 		fmt.Println(err)
@@ -50,6 +65,20 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
+	})
+
+	r.GET("/apple", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "https://apple.cn")
+	})
+
+	r.Use(Logger())
+
+	r.GET("/middleware", func(c *gin.Context) {
+		example := c.MustGet("example").(string)
+
+		fmt.Println(example)
+
+		c.JSON(http.StatusOK, gin.H{"message": "good job"})
 	})
 
 	r.Run(":3003")
