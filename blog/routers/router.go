@@ -3,7 +3,7 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"golang-practice/blog/pkg/setting"
-	"net/http"
+	"golang-practice/blog/routers/api/v1"
 )
 
 func InitRouter() *gin.Engine {
@@ -14,11 +14,16 @@ func InitRouter() *gin.Engine {
 
 	gin.SetMode(setting.RunMode)
 
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "test",
-		})
-	})
+	apiV1 := r.Group("/api/v1")
+	{
+		apiV1.GET("/tags", v1.GetTags)
+
+		apiV1.POST("/tags", v1.AddTag)
+
+		apiV1.PUT("/tags/:id", v1.EditTag)
+
+		apiV1.DELETE("/tags/:id", v1.DeleteTag)
+	}
 
 	return r
 }

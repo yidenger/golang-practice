@@ -38,7 +38,7 @@ func init() {
 		user,
 		password,
 		host,
-		dbName0
+		dbName,
 	))
 
 	if err != nil {
