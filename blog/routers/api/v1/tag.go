@@ -81,7 +81,7 @@ func AddTag(c *gin.Context) {
 func EditTag(c *gin.Context) {
 	id, _ := com.StrTo(c.Param("id")).Int()
 	name := c.Query("name")
-	modifiedBy = c.Query("modified_by")
+	modifiedBy := c.Query("modified_by")
 
 	valid := validation.Validation{}
 
@@ -112,7 +112,7 @@ func EditTag(c *gin.Context) {
 			}
 
 			models.EditTag(id, data)
-		} eles {
+		} else {
 			code = e.ERROR_NOT_EXIST_TAG
 		}
 
@@ -125,7 +125,7 @@ func EditTag(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg": e.GetMsg(code),
-		"data": make(map[string]string)
+		"data": make(map[string]string),
 	})
 }
 
