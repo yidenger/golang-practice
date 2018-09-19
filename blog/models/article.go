@@ -17,7 +17,7 @@ type Article struct {
 	Content string `json:"content"`
 	CreatedBy string `json:"created_by"`
 	ModifiedBy string `json:"modified_by"`
-	State string `json:"state"`
+	State int `json:"state"`
 }
 
 func (article *Article) BeforeCreate(scope *gorm.Scope) error {
@@ -79,6 +79,5 @@ func AddArticle(data map[string]interface {}) bool {
 
 func DeleteArticle(id int) bool {
 	db.Where("id = ?", id).Delete(Article{})
-	return
+	return true
 }
-

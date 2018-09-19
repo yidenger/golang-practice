@@ -2,9 +2,13 @@ package v1
 
 import (
 	"net/http"
+
 	"golang-practice/blog/pkg/setting"
 	"log"
 	"golang-practice/blog/pkg/e"
+	"golang-practice/blog/models"
+	"golang-practice/blog/pkg/util"
+
 	"github.com/astaxie/beego/validation"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
@@ -100,7 +104,7 @@ func AddArticle(c *gin.Context) {
 	code := e.INVALID_PARAMS
 
 	if !valid.HasErrors() {
-		if models.ExistTagById(tagId) {
+		if models.ExistTagByID(tagId) {
 			data := make(map[string]interface {})
 			data["tag_id"] = tagId
 			data["title"] = title
@@ -151,8 +155,73 @@ func EditArticle(c *gin.Context) {
 	valid.MaxSize(content, 65535, "content").Message("内容最长为65535字符")
 	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
 	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
+
+	code := e.INVALID_PARAMS
+
+	if !valid.HasErrors() {
+		if models.ExistArticleByID(id) {
+			if models.ExistTagByID(tagId) {
+				data := make(map[string]interface {})
+				if tagId > 0 {
+					data["tag_id"] = tagId
+				}
+				if title != "" {
+					data["title"] = title
+				}
+				if desc != "" {
+					data["desc"] = desc
+				}
+				if content != "" {
+					data["content"] = content
+				}
+
+				data["modified_by"] = modifiedBy
+
+				models.EditArticle(id, data)
+				code = e.SUCCESS
+			} else {
+				code = e.ERROR_NOT_EXIST_TAG
+			}
+		} else {
+			code = e.ERROR_NOT_EXIST_ARTICLE
+		}
+	} else {
+		for _, err := range valid.Errors {
+			log.Panicln(err.Key, err.Message)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg": e.GetMsg(code),
+		"data": make(map[string]string),
+	})
 }
 
 func DeleteArticle(c *gin.Context) {
-	
+	id, _ := com.StrTo(c.Param("id")).Int()
+
+	valid := validation.Validation{}
+	valid.Min(id, 1, "id").Message("ID必须大于0")
+
+	code := e.INVALID_PARAMS
+
+	if !valid.HasErrors() {
+		if models.ExistArticleByID(id) {
+			models.DeleteArticle(id)
+			code = e.SUCCESS
+		}	else {
+			code = e.ERROR_NOT_EXIST_ARTICLE
+		}
+	} else {
+		for _, err := range valid.Errors {
+			log.Println(err.Key, err.Message)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg": e.GetMsg(code),
+		"data": make(map[string]string),
+	})
 }

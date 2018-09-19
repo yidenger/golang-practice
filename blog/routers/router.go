@@ -3,7 +3,9 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"golang-practice/blog/pkg/setting"
+	"golang-practice/blog/routers/api"
 	"golang-practice/blog/routers/api/v1"
+	"golang-practice/blog/middleware/jwt"
 )
 
 func InitRouter() *gin.Engine {
@@ -14,7 +16,10 @@ func InitRouter() *gin.Engine {
 
 	gin.SetMode(setting.RunMode)
 
+	r.GET("/auth", api.GetAuth)
+
 	apiV1 := r.Group("/api/v1")
+	apiV1.Use(jwt.JWT())
 	{
 		apiV1.GET("/tags", v1.GetTags)
 
@@ -33,6 +38,7 @@ func InitRouter() *gin.Engine {
 		apiV1.PUT("/articles/:id", v1.EditArticle)
 
 		apiV1.DELETE("/articles/:id", v1.DeleteArticle)
+	}
 
 	return r
 }
