@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +9,7 @@ import (
 	"golang-practice/blog/pkg/e"
 	"golang-practice/blog/pkg/util"
 	"golang-practice/blog/models"
+	"golang-practice/blog/pkg/logging"
 )
 
 type auth struct {
@@ -17,7 +17,7 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"`
 }
 
-fucn GetAuth(c *gin.Context) {
+func GetAuth(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
@@ -44,7 +44,7 @@ fucn GetAuth(c *gin.Context) {
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
+			logging.Info(err.Key, err.Message)
 		}
 	}
 

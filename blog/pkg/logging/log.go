@@ -41,7 +41,7 @@ func Debug(v ...interface{}) {
 	logger.Println(v)
 }
 
-func Inof(v ...interface{}) {
+func Info(v ...interface{}) {
 	setPrefix(INFO)
 	logger.Println(v)
 }
