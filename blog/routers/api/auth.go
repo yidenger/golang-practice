@@ -25,7 +25,7 @@ func GetAuth(c *gin.Context) {
 	a := auth{Username: username, Password: password}
 	ok, _ := valid.Valid(&a)
 
-	data := make(map[stringinterface{}])
+	data := make(map[string]interface{})
 	code := e.INVALID_PARAMS
 
 	if ok {

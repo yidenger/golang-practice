@@ -187,7 +187,7 @@ func EditArticle(c *gin.Context) {
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Panicln(err.Key, err.Message)
+			logging.Error(err.Key, err.Message)
 		}
 	}
 
