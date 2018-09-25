@@ -18,4 +18,16 @@ func main() {
 	arr2[1] = 100
 
 	fmt.Println(arr, arr2)
+
+	var arr3 [2]int = [2]int{21, 22}
+	var arr4 [2]int
+
+	arr4 = arr3
+
+	fmt.Printf("arr3: %p, %v\n", &arr3, arr3)
+	fmt.Printf("arr4: %p, %v\n", &arr4, arr4)
+
+	fmt.Println(arr3 == arr4)
+
+	var arr
 }
