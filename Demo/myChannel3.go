@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sync"
 	"time"
 	"fmt"
 )
@@ -28,10 +29,14 @@ func main() {
 	// }
 
 
-	wait := Publish("A goroutine starts a new thread of execution.", 5 * time.Second)
-	fmt.Println("Let's hope the news will published before I leave")
-	<-wait
-	fmt.Println("Ten seconds later: I'm leaving now.")
+	// wait := Publish("A goroutine starts a new thread of execution.", 5 * time.Second)
+	// fmt.Println("Let's hope the news will published before I leave")
+	// <-wait
+	// fmt.Println("Ten seconds later: I'm leaving now.")
+
+	// race()
+
+	correct()
 }
 
 func Producer() <-chan string {
@@ -51,8 +56,41 @@ func Publish(text string, delay time.Duration) (chan string){
 	go func() {
 		time.Sleep(delay)
 		fmt.Println("Breaking news: ", text)
-		// ch <- "nihao"
+		ch <- "nihao"
 		// close(ch)
 	}()
 	return ch
+}
+
+func race() {
+	ch := make(chan int)
+
+	
+	go func() {
+		n := 0
+		n++
+		fmt.Println("xx: ", n)
+		ch <- n
+	}()
+	
+	n := <-ch
+	n++
+	fmt.Println("yy: ", n)
+	
+}
+
+func correct() {
+	var wg sync.WaitGroup
+	wg.Add(5)
+
+	for i := 0; i < 5; i++ {
+		go func () {
+			fmt.Print(i)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+
+	fmt.Println()
 }
